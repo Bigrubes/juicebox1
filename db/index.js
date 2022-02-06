@@ -3,7 +3,6 @@ const { Client } = require('pg'); // imports the pg module
 // supply the db name and location of the database
 const client = new Client('postgres://localhost:5432/juicebox-dev');
 
-
   async function createUser({ username, password, name, location }) {
     try {
       const {rows:[user]} = await client.query(`
@@ -47,7 +46,7 @@ const client = new Client('postgres://localhost:5432/juicebox-dev');
   async function getAllUsers() {
     try{
     const { rows } = await client.query(
-        `SELECT id, username, password, name, location, active
+        `SELECT id, username, name, location, active
         FROM users;
       `);
     
@@ -252,6 +251,13 @@ async function getPostById(postId) {
       WHERE id=$1;
     `, [postId]);
 
+    if (!post) {
+      throw {
+        name: "PostNotFoundError",
+        message: "Could not find a post with that postId"
+      };
+    }
+
     const { rows: tags } = await client.query(`
       SELECT tags.*
       FROM tags
@@ -263,7 +269,7 @@ async function getPostById(postId) {
       SELECT id, username, name, location
       FROM users
       WHERE id=$1;
-    `, [post.authorId])
+    `, [post.authorId]);
 
     post.tags = tags;
     post.author = author;
@@ -293,11 +299,39 @@ async function getPostsByTagName(tagName) {
     throw error;
   }
 } 
+
+async function getAllTags() {
+  try{
+  const { rows} = await client.query(`
+    SELECT *
+    FROM tags;
+  `);
+
+  return rows;
+} catch (error) {
+  throw error;
+}
+}
+
+async function getUserByUsername(username) {
+  try {
+    const { rows: [user] } = await client.query(`
+      SELECT *
+      FROM users
+      WHERE username=$1;
+    `, [username]);
+
+    return user;
+  } catch (error) {
+    throw error;
+  }
+}
   
   // and export them
   module.exports = {
     client,
     getAllUsers,
+    getAllTags,
     createUser,
     updateUser,
     createPost,
@@ -309,5 +343,7 @@ async function getPostsByTagName(tagName) {
     createPostTag,
     addTagsToPost,
     getPostById,
-    getPostsByTagName
+    getPostsByTagName,
+    getUserByUsername
   }
+
