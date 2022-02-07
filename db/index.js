@@ -56,6 +56,7 @@ const client = new Client('postgres://localhost:5432/juicebox-dev');
     }
   }
 
+
   async function getUserById(userId) {
     try{
       const {rows: [user]} = await client.query(`
@@ -63,10 +64,12 @@ const client = new Client('postgres://localhost:5432/juicebox-dev');
       FROM users
       WHERE id=${ userId}
       `);
+
       if (!user) { 
-      return null
+      return null;
       }
-      user.posts = await getPostsByUser(userId)
+      user.posts = await getPostsByUser(userId);
+
       return user;
     } catch (error){
       throw error;
@@ -146,7 +149,7 @@ async function updatePost(postId, fields = {}) {
     try{
     const { rows: postIds } = await client.query(`
       SELECT id
-      FROM users;
+      FROM posts;
     `);
 
     const posts = await Promise.all(postIds.map(
