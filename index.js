@@ -4,9 +4,6 @@ const server = express();
 
 require('dotenv').config();
 
-// remove this once you confirm it works
-// console.log(process.env.JWT_SECRET);
-
 const { client } = require('./db');
 client.connect();
 

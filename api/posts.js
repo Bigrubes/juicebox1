@@ -49,10 +49,10 @@ postsRouter.use((req, res, next) => {
       const allPosts = await getAllPosts();
   //     console.log('hello', allPosts)
   
-  //     const posts = allPosts.filter(post => {
-  //         return post.active || (req.user && post.author.id === req.user.id);
-  // //       // keep a post if it is either active, or if it belongs to the current user
-  //     });
+      const posts = allPosts.filter(post => {
+          return post.active || (req.user && post.author.id === req.user.id);
+  //       // keep a post if it is either active, or if it belongs to the current user
+      });
   
       res.send({
         allPosts,
@@ -61,13 +61,6 @@ postsRouter.use((req, res, next) => {
       next({ name, message });
     }
   });
-  
-  // postsRouter.get('/', async (req, res, next) => {
-  //   const posts = await getAllPosts();
-  //   res.send({
-  //     posts: [],
-  //   });
-  // });
 
   postsRouter.patch('/:postId', requireUser, async (req, res, next) => {
     const { postId } = req.params;
@@ -136,4 +129,3 @@ postsRouter.use((req, res, next) => {
   // });
 
 module.exports = postsRouter;
-

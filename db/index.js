@@ -349,4 +349,3 @@ async function getUserByUsername(username) {
     getPostsByTagName,
     getUserByUsername
   }
-
