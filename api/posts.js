@@ -55,7 +55,7 @@ postsRouter.use((req, res, next) => {
       });
   
       res.send({
-        allPosts,
+        posts,
       });
     } catch ({ name, message }) {
       next({ name, message });
